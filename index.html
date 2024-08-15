@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Calculator</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .calculator, .geometry, .converter {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 320px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            margin-bottom: 20px;
+        }
+
+        #display {
+            width: 100%;
+            height: 50px;
+            border: none;
+            padding: 10px;
+            font-size: 24px;
+            text-align: right;
+            background-color: #333;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .btn {
+            border: 1px solid #ddd;
+            padding: 20px;
+            font-size: 18px;
+            background-color: #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #ddd;
+        }
+
+        .btn:active {
+            background-color: #ccc;
+        }
+
+        .geometry, .converter {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .geometry input, .geometry button,
+        .converter input, .converter button {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .geometry button, .converter button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .geometry button:hover, .converter button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Advanced Calculator -->
+        <div class="calculator">
+            <input type="text" id="display" disabled>
+            <div class="buttons">
+                <button class="btn" onclick="clearDisplay()">C</button>
+                <button class="btn" onclick="appendToDisplay('/')">/</button>
+                <button class="btn" onclick="appendToDisplay('*')">*</button>
+                <button class="btn" onclick="appendToDisplay('-')">-</button>
+
+                <button class="btn" onclick="appendToDisplay('7')">7</button>
+                <button class="btn" onclick="appendToDisplay('8')">8</button>
+                <button class="btn" onclick="appendToDisplay('9')">9</button>
+                <button class="btn" onclick="appendToDisplay('+')">+</button>
+
+                <button class="btn" onclick="appendToDisplay('4')">4</button>
+                <button class="btn" onclick="appendToDisplay('5')">5</button>
+                <button class="btn" onclick="appendToDisplay('6')">6</button>
+                <button class="btn" onclick="calculateResult()">=</button>
+
+                <button class="btn" onclick="appendToDisplay('1')">1</button>
+                <button class="btn" onclick="appendToDisplay('2')">2</button>
+                <button class="btn" onclick="appendToDisplay('3')">3</button>
+                <button class="btn" onclick="appendToDisplay('.')">.</button>
+
+                <button class="btn" onclick="appendToDisplay('0')">0</button>
+                <button class="btn" onclick="appendToDisplay('(')">(</button>
+                <button class="btn" onclick="appendToDisplay(')')">)</button>
+                <button class="btn" onclick="calculateSquareRoot()">√</button>
+
+                <button class="btn" onclick="calculateFactorial()">n!</button>
+                <button class="btn" onclick="calculatePower()">x^y</button>
+                <button class="btn" onclick="calculateLog()">log(x)</button>
+                <button class="btn" onclick="calculateCube()">x^3</button>
+
+                <button class="btn" onclick="calculateTrig('sin')">sin</button>
+                <button class="btn" onclick="calculateTrig('cos')">cos</button>
+                <button class="btn" onclick="calculateTrig('tan')">tan</button>
+                <button class="btn" onclick="calculateIntegral()">∫</button>
+            </div>
+        </div>
+
+        <!-- Geometry Calculator -->
+        <div class="geometry">
+            <h3>Geometry Calculator</h3>
+            <div>
+                <label for="triangle-base">Triangle Base:</label>
+                <input type="number" id="triangle-base" placeholder="Base">
+                <label for="triangle-height">Triangle Height:</label>
+                <input type="number" id="triangle-height" placeholder="Height">
+                <button onclick="calculateTriangleArea()">Calculate Triangle Area</button>
+                <div class="result" id="triangle-result"></div>
+            </div>
+            <div>
+                <label for="circle-radius">Circle Radius:</label>
+                <input type="number" id="circle-radius" placeholder="Radius">
+                <button onclick="calculateCircleArea()">Calculate Circle Area</button>
+                <div class="result" id="circle-result"></div>
+            </div>
+        </div>
+
+        <!-- Converter -->
+        <div class="converter">
+            <h3>Number System Converter</h3>
+            <label for="decimal-input">Decimal:</label>
+            <input type="number" id="decimal-input" placeholder="Enter Decimal">
+            <button onclick="convertDecimal()">Convert</button>
+            <div class="result" id="conversion-result"></div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 NguyenNguyen. All rights reserved.
+    </footer>
+
+    <script>
+        // Advanced Calculator JavaScript
+        function appendToDisplay(value) {
+            document.getElementById('display').value += value;
+        }
+
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+
+        function calculateResult() {
+            const display = document.getElementById('display');
+            try {
+                display.value = eval(display.value);
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+
+        function calculateSquareRoot() {
+            const display = document.getElementById('display');
+            try {
+                display.value = Math.sqrt(parseFloat(display.value));
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+
+        function calculateFactorial() {
+            const display = document.getElementById('display');
+            try {
+                const num = parseInt(display.value);
+                if (num < 0) {
+                    display.value = 'Error';
+                    return;
+                }
+                display.value = factorial(num);
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+
+        function factorial(n) {
+            return n <= 1 ? 1 : n * factorial(n - 1);
+        }
+
+        function calculatePower() {
+            const display = document.getElementById('display');
+            try {
+                const [base, exponent] = display.value.split('^');
+                display.value = Math.pow(parseFloat(base), parseFloat(exponent));
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+
+        function calculateLog() {
+            const display = document.getElementById('display');
+            try {
+                display.value = Math.log10(parseFloat(display.value));
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+
+        function calculateCube() {
+            const display = document.getElementById('display');
+            try {
+                display.value = Math.pow(parseFloat(display.value), 3);
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+
+        function calculateTrig(func) {
+            const display = document.getElementById('display');
+            try {
+                const value = parseFloat(display.value);
+                switch (func) {
+                    case 'sin':
+                        display.value = Math.sin(value);
+                        break;
+                    case 'cos':
+                        display.value = Math.cos(value);
+                        break;
+                    case 'tan':
+                        display.value = Math.tan(value);
+                        break;
+                }
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+
+        function calculateIntegral() {
+            const display = document.getElementById('display');
+            try {
+                // Simple numerical integration using the Trapezoidal rule
+                const [func, from, to] = display.value.split(',');
+                const f = new Function('x', `return ${func}`);
+                const a = parseFloat(from);
+                const b = parseFloat(to);
+                const n = 1000; // Number of trapezoids
+                const h = (b - a) / n;
+                let sum = 0;
+                for (let i = 0; i < n; i++) {
+                    const x1 = a + i * h;
+                    const x2 = a + (i + 1) * h;
+                    sum += 0.5 * (f(x1) + f(x2)) * h;
+                }
+                display.value = sum;
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+
+        // Geometry Calculations JavaScript
+        function calculateTriangleArea() {
+            const base = parseFloat(document.getElementById('triangle-base').value);
+            const height = parseFloat(document.getElementById('triangle-height').value);
+            const result = (base * height) / 2;
+            document.getElementById('triangle-result').textContent = `Area: ${result}`;
+        }
+
+        function calculateCircleArea() {
+            const radius = parseFloat(document.getElementById('circle-radius').value);
+            const result = Math.PI * Math.pow(radius, 2);
+            document.getElementById('circle-result').textContent = `Area: ${result}`;
+        }
+
+        // Number System Converter JavaScript
+        function convertDecimal() {
+            const decimal = parseInt(document.getElementById('decimal-input').value);
+            if (isNaN(decimal)) {
+                document.getElementById('conversion-result').textContent = 'Please enter a valid decimal number.';
+                return;
+            }
+            const binary = decimal.toString(2);
+            const hex = decimal.toString(16).toUpperCase();
+            document.getElementById('conversion-result').innerHTML = `
+                Binary: ${binary}<br>
+                Hexadecimal: ${hex}
+            `;
+        }
+    </script>
+</body>
+</html>
